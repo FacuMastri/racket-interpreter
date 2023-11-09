@@ -39,3 +39,11 @@
       )
     )
   )
+
+(deftest fnc-append-test
+  (testing "Test de fnc-append"
+    (is (= (fnc-append '((1 2) (3) (4 5) (6 7))) '(1 2 3 4 5 6 7)))
+    (is (= (str (fnc-append '((1 2) 3 (4 5) (6 7)))) "(;ERROR: append: Wrong type in arg 3)"))
+    (is (= (str (fnc-append '( (1 2) A (4 5) (6 7)))) "(;ERROR: append: Wrong type in arg A)"))
+    )
+  )

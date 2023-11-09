@@ -77,6 +77,7 @@
 
 ; Funciones auxiliares propias
 (declare restaurar-bool-aux)
+(declare fnc-append-aux)
 
 
 (defn -main []
@@ -634,7 +635,13 @@
 (defn fnc-append
       "Devuelve el resultado de fusionar listas."
       [lista]
-      ()
+      (fnc-append-aux lista ())
+      )
+(defn fnc-append-aux [lista resultado]
+  (cond
+    (empty? lista) resultado
+    (not (seq? (first lista))) (generar-mensaje-error :wrong-type-arg 'append (first lista))
+    :else (fnc-append-aux (rest lista) (concat resultado (first lista))))
       )
 
 ; user=> (fnc-equal? ())
