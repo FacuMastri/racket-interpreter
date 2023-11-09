@@ -75,6 +75,9 @@
 (declare evaluar-clausulas-de-cond)
 (declare evaluar-secuencia-en-cond)
 
+; Funciones auxiliares propias
+(declare restaurar-bool-aux)
+
 
 (defn -main []
       (repl))
@@ -601,7 +604,7 @@
 ; ""
 (defn proteger-bool-en-str
       "Cambia, en una cadena, #t por %t y #f por %f, para poder aplicarle read-string."
-      [cadena] (clojure.string/replace (clojure.string/replace cadena #"#t" "%t") #"#f" "%f")
+      [cadena] (st/replace (st/replace cadena #"#t" "%t") #"#f" "%f")
       )
 
 ; user=> (restaurar-bool (read-string (proteger-bool-en-str "(and (or #F #f #t #T) #T)")))
@@ -610,8 +613,17 @@
 ; (and (or #F #f #t #T) #T)
 (defn restaurar-bool
       "Cambia, en un codigo leido con read-string, %t por #t y %f por #f."
-      []
+      [codigo] (map restaurar-bool-aux codigo)
       )
+
+(defn restaurar-bool-aux [elemento]
+      (cond
+            (seq? elemento) (restaurar-bool elemento)
+            (symbol? elemento) (symbol (st/replace (st/replace (str elemento) #"%t" "#t") #"%f" "#f"))
+            :else elemento
+            )
+      )
+
 
 ; user=> (fnc-append '( (1 2) (3) (4 5) (6 7)))
 ; (1 2 3 4 5 6 7)
@@ -621,7 +633,8 @@
 ; (;ERROR: append: Wrong type in arg A)
 (defn fnc-append
       "Devuelve el resultado de fusionar listas."
-      []
+      [lista]
+      ()
       )
 
 ; user=> (fnc-equal? ())

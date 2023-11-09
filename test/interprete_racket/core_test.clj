@@ -27,5 +27,15 @@
     (is (= "(and (or %t %f) %f)" (proteger-bool-en-str "(and (or #t #f) #f)")))
     (is (= "(and (or %f %t) %t)" (proteger-bool-en-str "(and (or #f #t) #t)")))
     (is (= "(and (or %t %t) %t)" (proteger-bool-en-str "(and (or #t #t) #t)")))
+    (is (= "" (proteger-bool-en-str "")))
+    )
+  )
+
+(deftest restaurar-bool-test
+  (testing "Test de restaurar-bool"
+    (let [esperado (list (symbol "and") (list (symbol "or") (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")) (symbol "#t"))]
+      (is (= esperado (restaurar-bool (read-string "(and (or %f %f %t %t) %t)"))))
+      (is (= esperado (restaurar-bool (read-string (proteger-bool-en-str "(and (or #f #f #t #t) #t)")))))
+      )
     )
   )
