@@ -47,3 +47,15 @@
     (is (= (str (fnc-append '( (1 2) A (4 5) (6 7)))) "(;ERROR: append: Wrong type in arg A)"))
     )
   )
+
+(deftest fnc-equal?-test
+  (testing "Test de fnc-equal?"
+    (is (= (fnc-equal? ()) (symbol "#t")))
+    (is (= (fnc-equal? '(A)) (symbol "#t")))
+    (is (= (fnc-equal? '(A a A)) (symbol "#t")))
+    (is (= (fnc-equal? '(A a A a)) (symbol "#t")))
+    (is (= (fnc-equal? '(A a A B)) (symbol "#f")))
+    (is (= (fnc-equal? '(1 1 1 1)) (symbol "#t")))
+    (is (= (fnc-equal? '(1 1 2 1))(symbol "#f")))
+    )
+  )

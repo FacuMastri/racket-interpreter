@@ -78,6 +78,9 @@
 ; Funciones auxiliares propias
 (declare restaurar-bool-aux)
 (declare fnc-append-aux)
+(declare bool-a-simbolo)
+(declare fnc-equal-wrapper)
+(declare fnc-equal-aux)
 
 
 (defn -main []
@@ -662,8 +665,29 @@
 ; #f
 (defn fnc-equal?
       "Compara elementos. Si son iguales, devuelve #t. Si no, #f."
-      []
+      [lista]
+      (cond
+            (or (empty? lista) (= (count lista) 1)) (bool-a-simbolo true)
+            :else (bool-a-simbolo (reduce fnc-equal-wrapper lista))
+            )
       )
+
+(defn fnc-equal?-aux [x y]
+      (cond
+            (and (number? x) (number? y)) (= x y)
+            (= (type x) (type y)) (= (lower-case (str x)) (lower-case (str y)))
+            :else false
+            )
+      )
+
+(defn bool-a-simbolo [bool]
+      (if bool (symbol "#t") (symbol "#f"))
+      )
+
+(defn fnc-equal-wrapper [x y]
+      (if (fnc-equal?-aux x y) x (reduced false))
+      )
+
 
 ; user=> (fnc-read ())
 ; (hola
@@ -677,7 +701,10 @@
 ; (;ERROR: Wrong number of args given #<primitive-procedure read>)
 (defn fnc-read
       "Devuelve la lectura de un elemento de Racket desde la terminal/consola."
-      []
+      [args]
+      (cond
+            ()
+            )
       )
 
 ; user=> (fnc-sumar ())
