@@ -908,7 +908,8 @@
 ; (;ERROR: >: Wrong type in arg2 A)
 (defn fnc-mayor
       "Devuelve #t si los numeros de una lista estan en orden estrictamente decreciente; si no, #f."
-      []
+      [lista]
+      (fnc-comparar-aux lista > '>)
       )
 
 ; user=> (fnc-mayor-o-igual ())
