@@ -81,6 +81,8 @@
 (declare bool-a-simbolo)
 (declare fnc-equal-wrapper)
 (declare fnc-equal-aux)
+(declare transformar-en-valores)
+(declare contar-valores)
 
 
 (defn -main []
@@ -547,7 +549,20 @@
       "Lee una cadena desde la terminal/consola. Si contiene parentesis de menos al presionar Enter/Intro,
       se considera que la cadena ingresada es una subcadena y el ingreso continua. De lo contrario, se la
       devuelve completa (si corresponde, advirtiendo previamente que hay parentesis de mas)."
-      []
+      ([] (leer-entrada 0))
+      ([parentesis]
+       (
+        let [cadena (st/trim (read-line))
+             cant-parentesis (verificar-parentesis cadena)
+             diferencia (+ cant-parentesis parentesis)
+             ]
+              (cond
+                    (= 0 diferencia) cadena
+                    (= 1 diferencia) (str cadena " " (leer-entrada diferencia))
+                    :else (do (imprimir (generar-mensaje-error :warning-paren)) cadena)
+                    )
+              )
+       )
       )
 
 ; user=> (verificar-parentesis "(hola 'mundo")
@@ -562,7 +577,25 @@
 ; 0
 (defn verificar-parentesis
       "Cuenta los parentesis en una cadena, sumando 1 si `(`, restando 1 si `)`. Si el contador se hace negativo, para y retorna -1."
-      []
+      [cadena]
+      (reduce contar-valores (map transformar-en-valores cadena))
+      )
+
+(defn transformar-en-valores
+      [caracter]
+      (cond
+            (= caracter \() 1
+            (= caracter \)) -1
+            :else 0
+            )
+      )
+
+(defn contar-valores
+      [acumulador valor]
+      (cond
+            (< (+ acumulador valor) 0) (reduced -1)
+            :else (+ acumulador valor)
+            )
       )
 
 ; user=> (actualizar-amb '(a 1 b 2 c 3) 'd 4)
@@ -701,9 +734,11 @@
 ; (;ERROR: Wrong number of args given #<primitive-procedure read>)
 (defn fnc-read
       "Devuelve la lectura de un elemento de Racket desde la terminal/consola."
-      [args]
+      [lista]
       (cond
-            ()
+            (= 1 (count lista)) (generar-mensaje-error :io-ports-not-implemented 'read)
+            (>= 2 (count lista)) (generar-mensaje-error :wrong-number-args-proc 'read)
+            :else (read-string (leer-entrada))
             )
       )
 

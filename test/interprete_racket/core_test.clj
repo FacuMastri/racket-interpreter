@@ -2,6 +2,31 @@
   (:require [clojure.test :refer :all]
             [interprete-racket.core :refer :all]))
 
+
+(deftest leer-entrada-test
+  (testing "Test de leer-entrada"
+    ; Observacion: puede ser que las pruebas fallen si se ejecutan en Windows. Cambiar los \n por \r\n
+    (is (= (with-in-str "(hola\nmundo)" (leer-entrada)) "(hola mundo)"))
+    (is (= (with-in-str "123" (leer-entrada)) "123"))
+    (is (= (with-in-str "123\n" (leer-entrada)) "123"))
+    (is (= (with-in-str "(+ 1 3) 3)" (leer-entrada)) "(+ 1 3) 3)"))
+    )
+  (testing "Test de efectos colaterales"
+    (is (= (with-out-str (with-in-str "(+ 1 3) 3)" (leer-entrada))) ";WARNING: unexpected \")\"#<input-port 0> \n"))
+    )
+  )
+
+(deftest verificar-parentesis-test
+  (testing "Test de verificar-parentesis"
+    (is (= (verificar-parentesis "(hola 'mundo") '1))
+    (is (= (verificar-parentesis "(hola '(mundo)))"), '-1))
+    (is (= (verificar-parentesis "(hola '(mundo) () 6) 7)"), '-1))
+    (is (= (verificar-parentesis "(hola '(mundo) () 6) 7) 9)"), '-1))
+    (is (= (verificar-parentesis "(hola '(mundo) )"), '0))
+    )
+  )
+
+
 (deftest proteger-bool-en-str-test
   (testing "Test de proteger-bool-en-str solo con #t"
     (is (= "%t" (proteger-bool-en-str "#t")))
@@ -59,3 +84,9 @@
     (is (= (fnc-equal? '(1 1 2 1))(symbol "#f")))
     )
   )
+
+;(deftest fnc-read-test
+;  (testing "Test de fnc-read"
+;    (is (= (str (with-in-str "(hola\nmundo)" (fnc-read ()))) "(hola mundo)"))
+;    )
+;  )
