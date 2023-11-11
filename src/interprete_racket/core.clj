@@ -83,6 +83,7 @@
 (declare fnc-equal-aux)
 (declare transformar-en-valores)
 (declare contar-valores)
+(declare lista-a-hash-map)
 
 
 (defn -main []
@@ -609,8 +610,22 @@
 (defn actualizar-amb
       "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor.
       Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza la nueva informacion."
-      []
+      [ambiente clave valor]
+      (if (error? valor)
+            ambiente
+            (let [diccionario (lista-a-hash-map ambiente)]
+                  (cond
+                        (not (contains? diccionario clave)) (seq (conj (vec ambiente) clave valor))
+                        :else (flatten (seq (assoc diccionario clave valor)))
+                        )
+                  )
+            )
       )
+
+(defn lista-a-hash-map [lista]
+      (into (hash-map) (vec (map vec (partition 2 lista))))
+      )
+
 
 ; user=> (buscar 'c '(a 1 b 2 c 3 d 4 e 5))
 ; 3
@@ -619,8 +634,15 @@
 (defn buscar
       "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
        y devuelve el valor asociado. Devuelve un error :unbound-variable si no la encuentra."
-      []
+      [ambiente clave]
+       (cond
+            (empty? ambiente) (generar-mensaje-error :unbound-variable clave)
+            (= (first ambiente) clave) (second ambiente)
+            :else (buscar (drop 2 ambiente) clave)
+            )
       )
+
+
 
 ; user=> (error? (list (symbol ";ERROR:") 'mal 'hecho))
 ; true
@@ -630,7 +652,8 @@
 ; true
 (defn error?
       "Devuelve true o false, segun sea o no el arg. una lista con `;ERROR:` o `;WARNING:` como primer elemento."
-      []
+      [valor]
+      (and (seq? valor) (or (= (first valor) (symbol ";ERROR:")) (= (first valor) (symbol ";WARNING:"))))
       )
 
 ; user=> (proteger-bool-en-str "(or #f #t)")

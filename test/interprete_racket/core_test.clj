@@ -26,6 +26,33 @@
     )
   )
 
+(deftest error?-test
+  (testing "Test de error?"
+    (is (error? (list (symbol ";ERROR:") 'mal 'hecho)))
+    (is (not (error? (list 'mal 'hecho)))
+    (is (error? (list (symbol ";WARNING:") 'mal 'hecho))))
+    (is (not (error? (list 'no 'error))))
+    (is (not (error? 'no-es-lista)))
+    (is (not (error? nil)))
+    ))
+
+(deftest buscar-test
+  (testing "Test de buscar"
+    (is (= (buscar '(a 1 b 2 c 3 d 4 e 5) 'c) 3))
+    (is (= (buscar '(a 1 b 2 c 3 d 4 e 5) 'f) (list (symbol ";ERROR:") (symbol "unbound") (symbol "variable:") 'f)))
+    (is (= (buscar '(a 1 b 2 c 3 d 4 e 5) 'a) 1))
+    (is (= (buscar '(a 1 b 2 c 3 d 4 e 5) 'z) (list (symbol ";ERROR:") (symbol "unbound") (symbol "variable:") 'z)))
+    (is (= (buscar '() 'a) (list (symbol ";ERROR:") (symbol "unbound" ) (symbol "variable:") 'a)))
+    ))
+
+(deftest actualizar-amb-test
+  (testing "Test for actualizar-amb function"
+    (is (= (actualizar-amb '(a 1 b 2 c 3) 'd 4) '(a 1 b 2 c 3 d 4)))
+    (is (= (actualizar-amb '(a 1 b 2 c 3) 'b 4) '(a 1 b 4 c 3)))
+    (is (= (actualizar-amb '(a 1 b 2 c 3) 'b (list (symbol ";ERROR:") 'mal 'hecho)) '(a 1 b 2 c 3)))
+    (is (= (actualizar-amb '() 'b 7) '(b 7)))
+    ))
+
 
 (deftest proteger-bool-en-str-test
   (testing "Test de proteger-bool-en-str solo con #t"
