@@ -785,8 +785,17 @@
 (defn fnc-sumar
       "Suma los elementos de una lista."
       ([lista] (fnc-sumar lista 0))
-      ([lista suma])
+      ([lista suma]
+       (cond
+             (empty? lista) suma
+             (not (number? (first lista))) (generar-mensaje-error :wrong-type-arg1 '+ (first lista))
+             (= (count lista) 1) (+ suma (first lista))
+             (not (number? (second lista))) (generar-mensaje-error :wrong-type-arg2 '+ (second lista))
+             :else (fnc-sumar (drop 2 lista) (+ suma (first lista) (second lista)))
+             )
+       )
       )
+
 
 ; user=> (fnc-restar ())
 ; (;ERROR: -: Wrong number of args given)
