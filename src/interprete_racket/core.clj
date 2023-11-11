@@ -84,6 +84,7 @@
 (declare transformar-en-valores)
 (declare contar-valores)
 (declare lista-a-hash-map)
+(declare fnc-restar-aux)
 
 
 (defn -main []
@@ -815,7 +816,20 @@
 ; (;ERROR: -: Wrong type in arg2 A)
 (defn fnc-restar
       "Resta los elementos de un lista."
-      []
+      [lista]
+      (cond
+            (empty? lista) (generar-mensaje-error :wrong-number-args-oper '-)
+            (= 1 (count lista)) (- (first lista))
+            :else (reduce fnc-restar-aux lista)
+            )
+      )
+
+(defn fnc-restar-aux [x y]
+      (cond
+            (not (number? x)) (reduced (generar-mensaje-error :wrong-type-arg1 '- x))
+            (not (number? y)) (reduced (generar-mensaje-error :wrong-type-arg2 '- y))
+            :else (- x y)
+            )
       )
 
 ; user=> (fnc-menor ())

@@ -129,6 +129,19 @@
     (is (= (fnc-sumar '(3 4 5 6)) 18))
     (is (= (str (fnc-sumar '(A 4 5 6))) "(;ERROR: +: Wrong type in arg1 A)"))
     (is (= (str (fnc-sumar '(3 A 5 6))) "(;ERROR: +: Wrong type in arg2 A)"))
-    (is (= (str (fnc-sumar '(3 4 A 6))) "(;ERROR: +: Wrong type in arg1 A)"))
+    (is (= (str (fnc-sumar '(3 4 A 6))) "(;ERROR: +: Wrong type in arg2 A)"))
     (is (= (str (fnc-sumar '(3 4 6 A))) "(;ERROR: +: Wrong type in arg2 A)"))
+    )
+  )
+
+(deftest fnc-restar-test
+  (testing "Test de fnc-restar"
+    (is (= (str (fnc-restar '())) "(;ERROR: -: Wrong number of args given)"))
+    (is (= (fnc-restar '(3)) -3))
+    (is (= (fnc-restar '(3 4)) -1))
+    (is (= (fnc-restar '(3 4 5)) -6))
+    (is (= (fnc-restar '(3 4 5 6)) -12))
+    (is (= (str (fnc-restar '(A 4 5 6))) "(;ERROR: -: Wrong type in arg1 A)"))
+    (is (= (str (fnc-restar '(3 A 5 6))) "(;ERROR: -: Wrong type in arg2 A)"))
+    (is (= (str (fnc-restar '(3 4 A 6))) "(;ERROR: -: Wrong type in arg2 A)"))
     ))
