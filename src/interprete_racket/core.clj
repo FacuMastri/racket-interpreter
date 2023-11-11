@@ -633,7 +633,7 @@
 ; (;ERROR: unbound variable: f)
 (defn buscar
       "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
-       y devuelve el valor asociado. Devuelve un error :unbound-variable si no la encuentra."
+       y devuelve el valor asociado. Devuelve un error: unbound-variable si no la encuentra."
       [ambiente clave]
        (cond
             (empty? ambiente) (generar-mensaje-error :unbound-variable clave)
@@ -696,6 +696,7 @@
       [lista]
       (fnc-append-aux lista ())
       )
+
 (defn fnc-append-aux [lista resultado]
   (cond
     (empty? lista) resultado
@@ -759,9 +760,9 @@
       "Devuelve la lectura de un elemento de Racket desde la terminal/consola."
       [lista]
       (cond
+            (empty? lista) (read-string (leer-entrada))
             (= 1 (count lista)) (generar-mensaje-error :io-ports-not-implemented 'read)
-            (>= 2 (count lista)) (generar-mensaje-error :wrong-number-args-proc 'read)
-            :else (read-string (leer-entrada))
+            :else (generar-mensaje-error :wrong-number-args-prim-proc 'read)
             )
       )
 
@@ -783,7 +784,8 @@
 ; (;ERROR: +: Wrong type in arg2 A)
 (defn fnc-sumar
       "Suma los elementos de una lista."
-      []
+      ([lista] (fnc-sumar lista 0))
+      ([lista suma])
       )
 
 ; user=> (fnc-restar ())

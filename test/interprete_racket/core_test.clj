@@ -108,12 +108,14 @@
     (is (= (fnc-equal? '(A a A a)) (symbol "#t")))
     (is (= (fnc-equal? '(A a A B)) (symbol "#f")))
     (is (= (fnc-equal? '(1 1 1 1)) (symbol "#t")))
-    (is (= (fnc-equal? '(1 1 2 1))(symbol "#f")))
+    (is (= (fnc-equal? '(1 1 2 1)) (symbol "#f")))
     )
   )
 
-;(deftest fnc-read-test
-;  (testing "Test de fnc-read"
-;    (is (= (str (with-in-str "(hola\nmundo)" (fnc-read ()))) "(hola mundo)"))
-;    )
-;  )
+(deftest fnc-read-test
+  (testing "Test de fnc-read"
+    (is (= (str (with-in-str "(hola\nmundo)" (fnc-read ()))) "(hola mundo)"))
+    (is (= (str (fnc-read '(1))) "(;ERROR: read: Use of I/O ports not implemented)"))
+    (is (= (str (fnc-read '(1 2))) "(;ERROR: Wrong number of args given #<primitive-procedure read>)"))
+    (is (= (str (fnc-read '(1 2 3))) "(;ERROR: Wrong number of args given #<primitive-procedure read>)")))
+  )
