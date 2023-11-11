@@ -84,6 +84,7 @@
 (declare transformar-en-valores)
 (declare contar-valores)
 (declare lista-a-hash-map)
+(declare fnc-sumar-aux)
 (declare fnc-restar-aux)
 
 
@@ -785,16 +786,20 @@
 ; (;ERROR: +: Wrong type in arg2 A)
 (defn fnc-sumar
       "Suma los elementos de una lista."
-      ([lista] (fnc-sumar lista 0))
-      ([lista suma]
-       (cond
-             (empty? lista) suma
-             (not (number? (first lista))) (generar-mensaje-error :wrong-type-arg1 '+ (first lista))
-             (= (count lista) 1) (+ suma (first lista))
-             (not (number? (second lista))) (generar-mensaje-error :wrong-type-arg2 '+ (second lista))
-             :else (fnc-sumar (drop 2 lista) (+ suma (first lista) (second lista)))
-             )
-       )
+      [lista]
+      (cond
+            (empty? lista) 0
+            (= 1 (count lista)) (first lista)
+            :else (reduce fnc-sumar-aux lista)
+            )
+      )
+
+(defn fnc-sumar-aux [x y]
+      (cond
+            (not (number? x)) (reduced (generar-mensaje-error :wrong-type-arg1 '+ x))
+            (not (number? y)) (reduced (generar-mensaje-error :wrong-type-arg2 '+ y))
+            :else (+ x y)
+            )
       )
 
 
