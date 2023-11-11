@@ -145,3 +145,17 @@
     (is (= (str (fnc-restar '(3 A 5 6))) "(;ERROR: -: Wrong type in arg2 A)"))
     (is (= (str (fnc-restar '(3 4 A 6))) "(;ERROR: -: Wrong type in arg2 A)"))
     ))
+
+(deftest fnc-menor-test
+  (testing "Test de fnc-menor"
+    (is (= (fnc-menor '()) (symbol "#t")))
+    (is (= (fnc-menor '(1)) (symbol "#t")))
+    (is (= (fnc-menor '(1 2)) (symbol "#t")))
+    (is (= (fnc-menor '(1 2 3)) (symbol "#t")))
+    (is (= (fnc-menor '(1 2 3 4)) (symbol "#t")))
+    (is (= (fnc-menor '(1 2 2 4)) (symbol "#f")))
+    (is (= (fnc-menor '(1 2 1 4)) (symbol "#f")))
+    (is (= (str (fnc-menor '(A 1 2 4))) "(;ERROR: <: Wrong type in arg1 A)"))
+    (is (= (str (fnc-menor '(1 A 1 4))) "(;ERROR: <: Wrong type in arg2 A)"))
+    (is (= (str (fnc-menor '(1 2 A 4))) "(;ERROR: <: Wrong type in arg2 A)"))
+    ))

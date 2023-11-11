@@ -86,6 +86,8 @@
 (declare lista-a-hash-map)
 (declare fnc-sumar-aux)
 (declare fnc-restar-aux)
+(declare fnc-comparar-aux)
+(declare fnc-comparar-reduce)
 
 
 (defn -main []
@@ -859,7 +861,29 @@
 ; (;ERROR: <: Wrong type in arg2 A)
 (defn fnc-menor
       "Devuelve #t si los numeros de una lista estan en orden estrictamente creciente; si no, #f."
-      []
+      [lista]
+      (fnc-comparar-aux lista < '<)
+      )
+
+(defn fnc-comparar-aux [lista fun-comparacion literal-comparacion]
+      (let [resultado (cond
+                            (empty? lista) true
+                            :else (reduce (partial fnc-comparar-reduce fun-comparacion literal-comparacion) lista)
+                            )]
+            (cond
+                  (seq? resultado) resultado
+                  :else (bool-a-simbolo resultado)
+                  )
+            )
+      )
+
+(defn fnc-comparar-reduce [fun-comparacion literal-comparacion x y]
+      (cond
+            (not (number? x)) (reduced (generar-mensaje-error :wrong-type-arg1 literal-comparacion x))
+            (not (number? y)) (reduced (generar-mensaje-error :wrong-type-arg2 literal-comparacion y))
+            (not (fun-comparacion x y)) (reduced false)
+            :else y
+            )
       )
 
 ; user=> (fnc-mayor ())
