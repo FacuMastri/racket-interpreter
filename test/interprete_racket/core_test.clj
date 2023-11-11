@@ -185,3 +185,14 @@
     (is (= (str (fnc-mayor-o-igual '(5 4 A 2 1))) "(;ERROR: >=: Wrong type in arg2 A)"))
     )
   )
+
+(deftest evaluar-escalar-test
+  (testing "Test de evaluar-escalar"
+    (is (= (evaluar-escalar 32 '(x 6 y 11 z "hola")) '(32 (x 6 y 11 z "hola"))))
+    (is (= (evaluar-escalar "chau" '(x 6 y 11 z "hola")) '("chau" (x 6 y 11 z "hola"))))
+    (is (= (evaluar-escalar 'y '(x 6 y 11 z "hola")) '(11 (x 6 y 11 z "hola"))))
+    (is (= (evaluar-escalar 'z '(x 6 y 11 z "hola"))'("hola" (x 6 y 11 z "hola"))))
+    (is (= (str (first (evaluar-escalar 'n '(x 6 y 11 z "hola"))) "(;ERROR: unbound variable: n)")))
+    (is (= (second (evaluar-escalar 'n '(x 6 y 11 z "hola"))) '(x 6 y 11 z "hola")))
+    )
+  )
