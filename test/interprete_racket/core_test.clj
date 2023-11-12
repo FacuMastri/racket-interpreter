@@ -226,3 +226,16 @@
     (is (= (str (evaluar-if '(if 1) '(n 7))) "((;ERROR: if: missing or extra expression (if 1)) (n 7))"))
     )
   )
+
+(deftest evaluar-or-test
+  (testing "Test de evaluar-or"
+    (is (= (evaluar-or (list 'or) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#f") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-or (list 'or (symbol "#t")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#t") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-or (list 'or 7) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list 7 (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-or (list 'or (symbol "#f") 5) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list 5 (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-or (list 'or (symbol "#f")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#f") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-or (list 'or (symbol "#f") (symbol "#t")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#t") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-or (list 'or (symbol "#f") (symbol "#t") 24) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#t") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-or (list 'or (symbol "#f") (symbol "#f") 24) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list 24 (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    )
+  )

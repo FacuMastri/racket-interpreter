@@ -90,6 +90,7 @@
 (declare fnc-comparar-aux)
 (declare fnc-comparar-reduce)
 (declare crear-lambda)
+(declare evaluar-or-aux)
 
 
 (defn -main []
@@ -1052,7 +1053,20 @@
 ; (#f (#f #f #t #t))
 (defn evaluar-or
       "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
-      []
+      [expresion ambiente]
+      (cond
+            (empty? (rest expresion)) (list (symbol "#f") ambiente)
+            :else (list (reduce (partial evaluar-or-aux ambiente) (rest expresion)) ambiente)
+            )
+      )
+
+(defn evaluar-or-aux [ambiente _ y]
+      (let [resultado (first (evaluar y ambiente))]
+            (cond
+                  (not (= (symbol "#f") resultado)) (reduced resultado)
+                  :else (symbol "#f")
+                  )
+            )
       )
 
 ; user=> (evaluar-set! '(set! x 1) '(x 0))
