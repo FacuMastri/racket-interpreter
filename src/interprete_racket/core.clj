@@ -997,7 +997,7 @@
       (cond
             (<= (count expresion) 2) (list (generar-mensaje-error :missing-or-extra 'define expresion) ambiente)
             (symbol? (second expresion)) (cond
-                                               (= 3 (count expresion)) (list (symbol "#<void>") (actualizar-amb ambiente (second expresion) (last expresion)))
+                                               (= 3 (count expresion)) (list (symbol "#<void>") (actualizar-amb ambiente (second expresion) (first (evaluar (last expresion) ambiente))))
                                                :else (list (generar-mensaje-error :missing-or-extra 'define expresion) ambiente))
             (and (seq? (second expresion)) (not (empty? (second expresion)))) (cond
                                                                                     (and (>= (count expresion) 3) (seq? (nth expresion 2)))
