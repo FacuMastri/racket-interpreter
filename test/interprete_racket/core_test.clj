@@ -212,3 +212,17 @@
     (is (= (str (evaluar-define '(define () 2) '(x 1))) "((;ERROR: define: bad variable (define () 2)) (x 1))"))
     )
   )
+
+(deftest evaluar-if-test
+  (testing "Test de evaluar-if"
+    (is (= (evaluar-if '(if 1 2) '(n 7)) '(2 (n 7))))
+    (is (= (evaluar-if '(if 1 n) '(n 7)) '(7 (n 7))))
+    (is (= (evaluar-if '(if 1 n 8) '(n 7)) '(7 (n 7))))
+    (is (= (evaluar-if (list 'if (symbol "#f") 'n) (list 'n 7 (symbol "#f") (symbol "#f"))) (list (symbol "#<void>") (list 'n 7 (symbol "#f") (symbol "#f")))))
+    (is (= (evaluar-if (list 'if (symbol "#f") 'n 8) (list 'n 7 (symbol "#f") (symbol "#f"))) (list 8 (list 'n 7 (symbol "#f") (symbol "#f")))))
+    ; Not yet implemented
+    ;(is (= (list (symbol "#<void>") (list 'n 9 (symbol "#f") (symbol "#f"))) (evaluar-if (list 'if (symbol "#f") 'n '(set! n 9)) (list 'n 7 (symbol "#f") (symbol "#f")))))
+    (is (= (str (evaluar-if '(if) '(n 7))) "((;ERROR: if: missing or extra expression (if)) (n 7))"))
+    (is (= (str (evaluar-if '(if 1) '(n 7))) "((;ERROR: if: missing or extra expression (if 1)) (n 7))"))
+    )
+  )

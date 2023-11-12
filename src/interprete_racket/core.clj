@@ -79,6 +79,7 @@
 (declare restaurar-bool-aux)
 (declare fnc-append-aux)
 (declare bool-a-simbolo)
+(declare simbolo-a-bool)
 (declare fnc-equal-wrapper)
 (declare fnc-equal-aux)
 (declare transformar-en-valores)
@@ -753,6 +754,15 @@
       (if bool (symbol "#t") (symbol "#f"))
       )
 
+(defn simbolo-a-bool [simbolo]
+  (cond
+    (= simbolo (symbol "#t")) true
+    (seq? simbolo) simbolo
+    (number? simbolo) simbolo
+    :else false
+    )
+  )
+
 (defn fnc-equal-wrapper [x y]
       (if (fnc-equal?-aux x y) x (reduced false))
       )
@@ -1019,8 +1029,16 @@
 ; ((;ERROR: if: missing or extra expression (if 1)) (n 7))
 (defn evaluar-if
       "Evalua una expresion `if`. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
-      []
-      )
+      [expresion ambiente]
+      (let [cant-elementos (count expresion)]
+        (cond
+          (<= cant-elementos 2) (list (generar-mensaje-error :missing-or-extra 'if expresion) ambiente)
+          (>= cant-elementos 5) (list (generar-mensaje-error :missing-or-extra 'if expresion) ambiente)
+          (= cant-elementos 3) (if (simbolo-a-bool (first (evaluar (second expresion) ambiente))) (evaluar (nth expresion 2) ambiente) (list (symbol "#<void>") ambiente))
+          (= cant-elementos 4) (evaluar (if (simbolo-a-bool (first (evaluar (second expresion) ambiente))) (nth expresion 2) (nth expresion 3)) ambiente)
+          )
+        )
+  )
 
 ; user=> (evaluar-or (list 'or) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
 ; (#f (#f #f #t #t))
