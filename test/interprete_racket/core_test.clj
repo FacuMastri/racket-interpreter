@@ -220,8 +220,7 @@
     (is (= (evaluar-if '(if 1 n 8) '(n 7)) '(7 (n 7))))
     (is (= (evaluar-if (list 'if (symbol "#f") 'n) (list 'n 7 (symbol "#f") (symbol "#f"))) (list (symbol "#<void>") (list 'n 7 (symbol "#f") (symbol "#f")))))
     (is (= (evaluar-if (list 'if (symbol "#f") 'n 8) (list 'n 7 (symbol "#f") (symbol "#f"))) (list 8 (list 'n 7 (symbol "#f") (symbol "#f")))))
-    ; Not yet implemented
-    ;(is (= (list (symbol "#<void>") (list 'n 9 (symbol "#f") (symbol "#f"))) (evaluar-if (list 'if (symbol "#f") 'n '(set! n 9)) (list 'n 7 (symbol "#f") (symbol "#f")))))
+    (is (= (list (symbol "#<void>") (list 'n 9 (symbol "#f") (symbol "#f"))) (evaluar-if (list 'if (symbol "#f") 'n '(set! n 9)) (list 'n 7 (symbol "#f") (symbol "#f")))))
     (is (= (str (evaluar-if '(if) '(n 7))) "((;ERROR: if: missing or extra expression (if)) (n 7))"))
     (is (= (str (evaluar-if '(if 1) '(n 7))) "((;ERROR: if: missing or extra expression (if 1)) (n 7))"))
     )
@@ -237,5 +236,15 @@
     (is (= (evaluar-or (list 'or (symbol "#f") (symbol "#t")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#t") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
     (is (= (evaluar-or (list 'or (symbol "#f") (symbol "#t") 24) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#t") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
     (is (= (evaluar-or (list 'or (symbol "#f") (symbol "#f") 24) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list 24 (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    )
+  )
+
+(deftest evaluar-set!-test
+  (testing "Test de evaluar-set!"
+    (is (= (evaluar-set! '(set! x 1) '(x 0)) (list (symbol "#<void>") '(x 1))))
+    (is (= (evaluar-set! '(set! x 1) '()) (list (list (symbol ";ERROR:") (symbol "unbound") (symbol "variable:") 'x) ())))
+    (is (= (evaluar-set! '(set! x) '(x 0)) (list (list (symbol ";ERROR:") (symbol "set!:") 'missing 'or 'extra 'expression '(set! x)) '(x 0))))
+    (is (= (evaluar-set! '(set! x 1 2) '(x 0)) (list (list (symbol ";ERROR:") (symbol "set!:") 'missing 'or 'extra 'expression '(set! x 1 2)) '(x 0))))
+    (is (= (evaluar-set! '(set! 1 2) '(x 0)) (list (list (symbol ";ERROR:") (symbol "set!:") 'bad 'variable 1) '(x 0))))
     )
   )

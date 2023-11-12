@@ -1081,7 +1081,13 @@
 ; ((;ERROR: set!: bad variable 1) (x 0))
 (defn evaluar-set!
       "Evalua una expresion `set!`. Devuelve una lista con el resultado y un ambiente actualizado con la redefinicion."
-      []
+      [expresion ambiente]
+      (cond
+            (not (= 3 (count expresion))) (list (generar-mensaje-error :missing-or-extra 'set! expresion) ambiente)
+            (not (symbol? (second expresion))) (list (generar-mensaje-error :bad-variable 'set! (second expresion)) ambiente)
+            (error? (buscar ambiente (second expresion))) (list (generar-mensaje-error :unbound-variable (second expresion)) ambiente)
+            :else (list (symbol "#<void>") (actualizar-amb ambiente (second expresion) (first (evaluar (last expresion) ambiente))))
+            )
       )
 
 ; Al terminar de cargar el archivo en el REPL de Clojure, se debe devolver true.
