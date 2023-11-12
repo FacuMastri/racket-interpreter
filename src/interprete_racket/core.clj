@@ -1,4 +1,5 @@
-(ns interprete-racket.core)
+(ns interprete-racket.core
+      (:import (java.io FileNotFoundException PushbackReader)))
 
 (require '[clojure.string :as st :refer [blank? starts-with? ends-with? lower-case]]
          '[clojure.java.io :refer [delete-file reader]]
@@ -212,12 +213,26 @@
       "Aplica una funcion primitiva a una `lae` (lista de argumentos evaluados)."
       [fnc lae amb]
       (cond
-            (= fnc '<)            (fnc-menor lae)
+            (= fnc '<) (fnc-menor lae)
+            (= fnc '>) (fnc-mayor lae)
+            (= fnc '>=) (fnc-mayor-o-igual lae)
+            (= fnc '+) (fnc-sumar lae)
+            (= fnc '-) (fnc-restar lae)
+            (= fnc '=) (fnc-equal? lae)
 
-            ;
-            ; COMPLETAR
-            ;
-
+            (= fnc 'append) (fnc-append lae)
+            (= fnc 'car) (fnc-car lae)
+            (= fnc 'cdr) (fnc-cdr lae)
+            (= fnc 'cons) (fnc-cons lae)
+            (= fnc 'display) (fnc-display lae)
+            (= fnc 'env) (fnc-env lae amb)
+            (= fnc 'length) (fnc-length lae)
+            (= fnc 'list) (fnc-list lae)
+            (= fnc 'list?) (fnc-list? lae)
+            (= fnc 'newline) (fnc-newline lae)
+            (= fnc 'not) (fnc-not lae)
+            (= fnc 'null?) (fnc-null? lae)
+            (= fnc 'reverse) (fnc-reverse lae)
 
             :else (generar-mensaje-error :wrong-type-apply fnc)))
 
@@ -469,12 +484,12 @@
                                (do (imprimir nom-a-usar) nuevo-amb)          ; Mostrar el error
                                (let [tmp (try
                                                (slurp nom-a-usar)
-                                               (catch java.io.FileNotFoundException _
+                                               (catch FileNotFoundException _
                                                      (generar-mensaje-error :file-not-found)))]
                                      (if (error? tmp)
                                            (do (imprimir tmp) nuevo-amb)        ; Mostrar el error
                                            (do (spit "rkt-temp" (proteger-bool-en-str (clojure.string/replace tmp #"#lang racket" "")))
-                                               (let [ret (with-open [in (java.io.PushbackReader. (reader "rkt-temp"))]
+                                               (let [ret (with-open [in (PushbackReader. (reader "rkt-temp"))]
                                                                (binding [*read-eval* false]
                                                                      (try
                                                                            (cargar-arch (second (evaluar (restaurar-bool (read in)) nuevo-amb)) in nom-original nom-a-usar)
@@ -712,10 +727,11 @@
       )
 
 (defn fnc-append-aux [lista resultado]
-  (cond
-    (empty? lista) resultado
-    (not (seq? (first lista))) (generar-mensaje-error :wrong-type-arg 'append (first lista))
-    :else (fnc-append-aux (rest lista) (concat resultado (first lista))))
+      (cond
+            (empty? lista) resultado
+            (not (seq? (first lista))) (generar-mensaje-error :wrong-type-arg 'append (first lista))
+            :else (fnc-append-aux (rest lista) (concat resultado (first lista)))
+            )
       )
 
 ; user=> (fnc-equal? ())
@@ -756,13 +772,13 @@
       )
 
 (defn simbolo-a-bool [simbolo]
-  (cond
-    (= simbolo (symbol "#t")) true
-    (seq? simbolo) simbolo
-    (number? simbolo) simbolo
-    :else false
-    )
-  )
+      (cond
+            (= simbolo (symbol "#t")) true
+            (seq? simbolo) simbolo
+            (number? simbolo) simbolo
+            :else false
+            )
+      )
 
 (defn fnc-equal-wrapper [x y]
       (if (fnc-equal?-aux x y) x (reduced false))
