@@ -9,6 +9,7 @@
     (is (= (with-in-str "(hola\nmundo)" (leer-entrada)) "(hola mundo)"))
     (is (= (with-in-str "123" (leer-entrada)) "123"))
     (is (= (with-in-str "123\n" (leer-entrada)) "123"))
+    ; El siguiente test produce una salida por pantalla, pero el test que verifica esto se encuentra en la seccion de efectos colaterales
     (is (= (with-in-str "(+ 1 3) 3)" (leer-entrada)) "(+ 1 3) 3)"))
     )
   (testing "Test de efectos colaterales"
@@ -194,5 +195,20 @@
     (is (= (evaluar-escalar 'z '(x 6 y 11 z "hola"))'("hola" (x 6 y 11 z "hola"))))
     (is (= (str (first (evaluar-escalar 'n '(x 6 y 11 z "hola"))) "(;ERROR: unbound variable: n)")))
     (is (= (second (evaluar-escalar 'n '(x 6 y 11 z "hola"))) '(x 6 y 11 z "hola")))
+    )
+  )
+
+(deftest evaluar-define-test
+  (testing "Test de evaluar-define"
+    (is (= (evaluar-define '(define x 2) '(x 1)) (list (symbol "#<void>") '(x 2))))
+    (is (= (evaluar-define '(define (f x) (+ x 1)) '(x 1)) (list (symbol "#<void>") '(x 1 f (lambda (x) (+ x 1))))))
+    (is (= (evaluar-define '(define (f x y) (+ x y)) '(x 1)) (list (symbol "#<void>") '(x 1 f (lambda (x y) (+ x y))))))
+    (is (= (evaluar-define '(define (f x) (display x) (newline) (+ x 1)) '(x 1)) (list (symbol "#<void>") '(x 1 f (lambda (x) (display x) (newline) (+ x 1))))))
+    (is (= (str (evaluar-define '(define) '(x 1))) "((;ERROR: define: missing or extra expression (define)) (x 1))"))
+    (is (= (str (evaluar-define '(define x) '(x 1))) "((;ERROR: define: missing or extra expression (define x)) (x 1))"))
+    (is (= (str (evaluar-define '(define x 2 3) '(x 1))) "((;ERROR: define: missing or extra expression (define x 2 3)) (x 1))"))
+    (is (= (str (evaluar-define '(define ()) '(x 1))) "((;ERROR: define: missing or extra expression (define ())) (x 1))"))
+    (is (= (str (evaluar-define '(define 2 x) '(x 1))) "((;ERROR: define: bad variable (define 2 x)) (x 1))"))
+    (is (= (str (evaluar-define '(define () 2) '(x 1))) "((;ERROR: define: bad variable (define () 2)) (x 1))"))
     )
   )
