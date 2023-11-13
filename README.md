@@ -24,3 +24,9 @@ Si queremos leer el archivo `jarras.rkt`:
 ```
 (enter! "jarras.rkt")
 ```
+
+Luego, podemos hacer:
+
+```
+(breadth-first bc)
+```
