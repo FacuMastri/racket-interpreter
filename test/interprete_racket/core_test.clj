@@ -24,6 +24,7 @@
     (is (= (verificar-parentesis "(hola '(mundo) () 6) 7)"), '-1))
     (is (= (verificar-parentesis "(hola '(mundo) () 6) 7) 9)"), '-1))
     (is (= (verificar-parentesis "(hola '(mundo) )"), '0))
+    (is (= (verificar-parentesis "((hola"), '2))
     )
   )
 
