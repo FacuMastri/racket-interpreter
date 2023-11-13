@@ -92,8 +92,8 @@
 (deftest restaurar-bool-test
   (testing "Test de restaurar-bool"
     (let [esperado (list (symbol "and") (list (symbol "or") (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")) (symbol "#t"))]
-      (is (= esperado (restaurar-bool (read-string "(and (or %f %f %t %t) %t)"))))
-      (is (= esperado (restaurar-bool (read-string (proteger-bool-en-str "(and (or #f #f #t #t) #t)")))))
+      (is (= (restaurar-bool (read-string "(and (or %f %f %t %t) %t)")) esperado))
+      (is (= (restaurar-bool (read-string (proteger-bool-en-str "(and (or #f #f #t #t) #t)"))) esperado))
       )
     )
   )

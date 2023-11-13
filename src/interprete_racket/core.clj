@@ -138,7 +138,7 @@
       (if (and (seq? expre) (or (empty? expre) (error? expre))) ; si `expre` es () o error, devolverla intacta
             (list expre amb)                                      ; de lo contrario, evaluarla
             (cond
-                  (not (seq? expre))             (evaluar-escalar expre amb)
+                  (not (seq? expre)) (evaluar-escalar expre amb)
                   (= (first expre) 'define) (evaluar-define expre amb)
                   (= (first expre) 'if) (evaluar-if expre amb)
                   (= (first expre) 'or) (evaluar-or expre amb)
@@ -974,7 +974,7 @@
       "Evalua una expresion escalar. Devuelve una lista con el resultado y un ambiente."
       [escalar ambiente]
       (cond
-            (symbol? escalar) (list (buscar ambiente escalar) ambiente)
+            (and (symbol? escalar) (not (= escalar (symbol "#<void>")))) (list (buscar ambiente escalar) ambiente)
             :else (list escalar ambiente)
             )
       )
