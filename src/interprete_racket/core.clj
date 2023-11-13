@@ -218,8 +218,8 @@
             (= fnc '>=) (fnc-mayor-o-igual lae)
             (= fnc '+) (fnc-sumar lae)
             (= fnc '-) (fnc-restar lae)
-            (= fnc '=) (fnc-equal? lae)
 
+            (= fnc 'equal?) (fnc-equal? lae)
             (= fnc 'append) (fnc-append lae)
             (= fnc 'car) (fnc-car lae)
             (= fnc 'cdr) (fnc-cdr lae)
