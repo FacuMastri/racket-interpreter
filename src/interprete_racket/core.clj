@@ -1,5 +1,4 @@
-(ns interprete-racket.core
-      (:import (java.io FileNotFoundException PushbackReader)))
+(ns interprete-racket.core)
 
 (require '[clojure.string :as st :refer [blank? starts-with? ends-with? lower-case]]
          '[clojure.java.io :refer [delete-file reader]]
@@ -232,6 +231,7 @@
             (= fnc 'newline) (fnc-newline lae)
             (= fnc 'not) (fnc-not lae)
             (= fnc 'null?) (fnc-null? lae)
+            (= fnc 'read) (fnc-read lae)
             (= fnc 'reverse) (fnc-reverse lae)
 
             :else (generar-mensaje-error :wrong-type-apply fnc)))
@@ -484,12 +484,12 @@
                                (do (imprimir nom-a-usar) nuevo-amb)          ; Mostrar el error
                                (let [tmp (try
                                                (slurp nom-a-usar)
-                                               (catch FileNotFoundException _
+                                               (catch java.io.FileNotFoundException _
                                                      (generar-mensaje-error :file-not-found)))]
                                      (if (error? tmp)
                                            (do (imprimir tmp) nuevo-amb)        ; Mostrar el error
                                            (do (spit "rkt-temp" (proteger-bool-en-str (clojure.string/replace tmp #"#lang racket" "")))
-                                               (let [ret (with-open [in (PushbackReader. (reader "rkt-temp"))]
+                                               (let [ret (with-open [in (java.io.PushbackReader. (reader "rkt-temp"))]
                                                                (binding [*read-eval* false]
                                                                      (try
                                                                            (cargar-arch (second (evaluar (restaurar-bool (read in)) nuevo-amb)) in nom-original nom-a-usar)
