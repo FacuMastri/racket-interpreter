@@ -82,8 +82,7 @@
 (declare simbolo-a-bool)
 (declare fnc-equal-wrapper)
 (declare fnc-equal-aux)
-(declare transformar-en-valores)
-(declare contar-valores)
+(declare sumar-parentesis)
 (declare lista-a-hash-map)
 (declare fnc-sumar-aux)
 (declare fnc-restar-aux)
@@ -602,23 +601,17 @@
 (defn verificar-parentesis
       "Cuenta los parentesis en una cadena, sumando 1 si `(`, restando 1 si `)`. Si el contador se hace negativo, para y retorna -1."
       [cadena]
-      (reduce contar-valores (map transformar-en-valores cadena))
+      (reduce sumar-parentesis 0 cadena)
       )
 
-(defn transformar-en-valores
-      [caracter]
-      (cond
-            (= caracter \() 1
-            (= caracter \)) -1
-            :else 0
-            )
-      )
-
-(defn contar-valores
-      [acumulador valor]
-      (cond
-            (< (+ acumulador valor) 0) (reduced -1)
-            :else (+ acumulador valor)
+(defn sumar-parentesis [suma valor]
+      (if (< suma 0)
+            (reduced -1)
+            (case valor
+                  \) (dec suma)
+                  \( (inc suma)
+                  suma
+                  )
             )
       )
 
