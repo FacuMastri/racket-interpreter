@@ -55,6 +55,7 @@
   (testing "Test for actualizar-amb function"
     (is (= (actualizar-amb '(a 1 b 2 c 3) 'd 4) '(a 1 b 2 c 3 d 4)))
     (is (= (actualizar-amb '(a 1 b 2 c 3) 'b 4) '(a 1 b 4 c 3)))
+    (is (= (actualizar-amb '(a 1 b 2 c 3) 'b '(4 4)) '(a 1 b (4 4) c 3)))
     (is (= (actualizar-amb '(a 1 b 2 c 3) 'b (list (symbol ";ERROR:") 'mal 'hecho)) '(a 1 b 2 c 3)))
     (is (= (actualizar-amb '() 'b 7) '(b 7)))
     ))
@@ -251,5 +252,6 @@
     (is (= (evaluar-set! '(set! x) '(x 0)) (list (list (symbol ";ERROR:") (symbol "set!:") 'missing 'or 'extra 'expression '(set! x)) '(x 0))))
     (is (= (evaluar-set! '(set! x 1 2) '(x 0)) (list (list (symbol ";ERROR:") (symbol "set!:") 'missing 'or 'extra 'expression '(set! x 1 2)) '(x 0))))
     (is (= (evaluar-set! '(set! 1 2) '(x 0)) (list (list (symbol ";ERROR:") (symbol "set!:") 'bad 'variable 1) '(x 0))))
+    (is (= (evaluar-set! '(set! x (0 0)) '(x 0)) (list (symbol "#<void>") '(x (0 0)))))
     )
   )

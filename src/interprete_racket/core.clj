@@ -83,7 +83,7 @@
 (declare fnc-equal-wrapper)
 (declare fnc-equal-aux)
 (declare sumar-parentesis)
-(declare lista-a-hash-map)
+(declare buscar-indice)
 (declare fnc-sumar-aux)
 (declare fnc-restar-aux)
 (declare fnc-comparar-aux)
@@ -627,20 +627,17 @@
       "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor.
       Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza la nueva informacion."
       [ambiente clave valor]
-      (if (error? valor)
-            ambiente
-            (let [diccionario (lista-a-hash-map ambiente)]
-                  (cond
-                        (not (contains? diccionario clave)) (seq (conj (vec ambiente) clave valor))
-                        :else (flatten (seq (assoc diccionario clave valor)))
-                        )
-                  )
-            )
+      (cond
+        (error? valor) ambiente
+        (error? (buscar ambiente clave)) (concat ambiente (list clave valor))
+        :else (let [posicion (buscar-indice clave ambiente)]
+                  (concat (take (dec posicion) ambiente) (list clave valor) (drop (inc posicion) ambiente)))
+        )
       )
 
-(defn lista-a-hash-map [lista]
-      (into (hash-map) (vec (map vec (partition 2 lista))))
-      )
+(defn buscar-indice [clave ambiente]
+      (inc (first (keep-indexed #(if (and (even? %1) (= clave %2)) %1) ambiente)))
+  )
 
 
 ; user=> (buscar 'c '(a 1 b 2 c 3 d 4 e 5))
