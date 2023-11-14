@@ -256,5 +256,7 @@
     (is (= (evaluar-set! '(set! x) '(x 0)) (list (list (symbol ";ERROR:") (symbol "set!:") 'missing 'or 'extra 'expression '(set! x)) '(x 0))))
     (is (= (evaluar-set! '(set! x 1 2) '(x 0)) (list (list (symbol ";ERROR:") (symbol "set!:") 'missing 'or 'extra 'expression '(set! x 1 2)) '(x 0))))
     (is (= (evaluar-set! '(set! 1 2) '(x 0)) (list (list (symbol ";ERROR:") (symbol "set!:") 'bad 'variable 1) '(x 0))))
+    (is (= (evaluar-set! '(set! x '(0 0)) '(x 0)) (list (symbol "#<void>") '(x (0 0)))))
+    (is (= (evaluar-set! '(set! x '(0 0)) '(x ())) (list (symbol "#<void>") '(x (0 0)))))
     )
   )
