@@ -1,4 +1,5 @@
-(ns interprete-racket.core)
+(ns interprete-racket.core
+      (:import (java.io FileNotFoundException PushbackReader)))
 
 (require '[clojure.string :as st :refer [blank? starts-with? ends-with? lower-case]]
          '[clojure.java.io :refer [delete-file reader]]
@@ -80,8 +81,8 @@
 (declare fnc-append-aux)
 (declare bool-a-simbolo)
 (declare simbolo-a-bool)
+(declare es-igual?)
 (declare fnc-equal-wrapper)
-(declare fnc-equal-aux)
 (declare sumar-parentesis)
 (declare buscar-indice)
 (declare fnc-sumar-aux)
@@ -483,12 +484,12 @@
                                (do (imprimir nom-a-usar) nuevo-amb)          ; Mostrar el error
                                (let [tmp (try
                                                (slurp nom-a-usar)
-                                               (catch java.io.FileNotFoundException _
+                                               (catch FileNotFoundException _
                                                      (generar-mensaje-error :file-not-found)))]
                                      (if (error? tmp)
                                            (do (imprimir tmp) nuevo-amb)        ; Mostrar el error
                                            (do (spit "rkt-temp" (proteger-bool-en-str (clojure.string/replace tmp #"#lang racket" "")))
-                                               (let [ret (with-open [in (java.io.PushbackReader. (reader "rkt-temp"))]
+                                               (let [ret (with-open [in (PushbackReader. (reader "rkt-temp"))]
                                                                (binding [*read-eval* false]
                                                                      (try
                                                                            (cargar-arch (second (evaluar (restaurar-bool (read in)) nuevo-amb)) in nom-original nom-a-usar)
@@ -743,7 +744,11 @@
             )
       )
 
-(defn fnc-equal?-aux [x y]
+(defn fnc-equal-wrapper [x y]
+      (if (es-igual? x y) x (reduced false))
+      )
+
+(defn es-igual? [x y]
       (cond
             (and (number? x) (number? y)) (= x y)
             (= (type x) (type y)) (= (lower-case (str x)) (lower-case (str y)))
@@ -758,16 +763,10 @@
 (defn simbolo-a-bool [simbolo]
       (cond
             (= simbolo (symbol "#t")) true
-            (seq? simbolo) simbolo
-            (number? simbolo) simbolo
+            (or (seq? simbolo) (number? simbolo)) simbolo
             :else false
             )
       )
-
-(defn fnc-equal-wrapper [x y]
-      (if (fnc-equal?-aux x y) x (reduced false))
-      )
-
 
 ; user=> (fnc-read ())
 ; (hola
@@ -1054,17 +1053,18 @@
 (defn evaluar-or
       "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
       [expresion ambiente]
-      (cond
-            (empty? (rest expresion)) (list (symbol "#f") ambiente)
-            :else (list (reduce (partial evaluar-or-aux ambiente) (rest expresion)) ambiente)
+      (let [lista (rest expresion)]
+            (if (empty? lista) (list (symbol "#f") ambiente)
+                               (list (reduce (partial evaluar-or-aux ambiente) (symbol "#f") lista) ambiente)
+                               )
             )
       )
 
-(defn evaluar-or-aux [ambiente _ y]
-      (let [resultado (first (evaluar y ambiente))]
+(defn evaluar-or-aux [ambiente resultado valor]
+      (let [evaluado (first (evaluar valor ambiente))]
             (cond
-                  (not (= (symbol "#f") resultado)) (reduced resultado)
-                  :else (symbol "#f")
+                  (not (= (symbol "#f") evaluado)) (reduced evaluado)
+                  :else resultado
                   )
             )
       )
