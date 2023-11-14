@@ -751,7 +751,7 @@
 (defn es-igual? [x y]
       (cond
             (and (number? x) (number? y)) (= x y)
-            (= (type x) (type y)) (= (lower-case (str x)) (lower-case (str y)))
+            (or (= (type x) (type y)) (and (seq? x) (seq? y))) (= (lower-case (str x)) (lower-case (str y)))
             :else false
             )
       )

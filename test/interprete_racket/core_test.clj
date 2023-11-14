@@ -116,6 +116,10 @@
     (is (= (fnc-equal? '(A a A B)) (symbol "#f")))
     (is (= (fnc-equal? '(1 1 1 1)) (symbol "#t")))
     (is (= (fnc-equal? '(1 1 2 1)) (symbol "#f")))
+    (is (= (fnc-equal? '(() () () ())) (symbol "#t")))
+    (is (= (fnc-equal? '(() A a ())) (symbol "#f")))
+    (is (= (fnc-equal? '(() () a ())) (symbol "#f")))
+    (is (= (fnc-equal? '(() 1 a ())) (symbol "#f")))
     )
   )
 
