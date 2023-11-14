@@ -579,14 +579,20 @@
       "Lee una cadena desde la terminal/consola. Si contiene parentesis de menos al presionar Enter/Intro,
       se considera que la cadena ingresada es una subcadena y el ingreso continua. De lo contrario, se la
       devuelve completa (si corresponde, advirtiendo previamente que hay parentesis de mas)."
-      []
-      (loop [entrada (read-line) acumulado []]
-            (cond
-                  (= (verificar-parentesis (apply str (conj acumulado entrada))) 0) (apply str (conj acumulado entrada))
-                  (= (verificar-parentesis (apply str (conj acumulado entrada))) -1) (do (imprimir (generar-mensaje-error :warning-paren)) (apply str (conj acumulado entrada)))
-                  :else (recur (read-line) (conj acumulado entrada " "))
-                  )
-            )
+      ([] (leer-entrada 0))
+      ([parentesis]
+       (
+             let [cadena (st/trim (read-line))
+                  cant-parentesis (verificar-parentesis cadena)
+                  diferencia (+ cant-parentesis parentesis)
+                  ]
+             (cond
+                   (= 0 diferencia) cadena
+                   (= 1 diferencia) (str cadena " " (leer-entrada diferencia))
+                   :else (do (imprimir (generar-mensaje-error :warning-paren)) cadena)
+                   )
+             )
+       )
       )
 
 ; user=> (verificar-parentesis "(hola 'mundo")
