@@ -614,10 +614,10 @@
 (defn sumar-parentesis [suma valor]
       (if (< suma 0)
             (reduced -1)
-            (case valor
-                  \) (dec suma)
-                  \( (inc suma)
-                  suma
+            (cond
+                  (= valor \)) (dec suma)
+                  (= valor \() (inc suma)
+                  :else suma
                   )
             )
       )
