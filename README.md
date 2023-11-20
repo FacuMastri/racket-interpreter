@@ -11,7 +11,7 @@ Para ejecutar el proyecto, se necesita tener instalado [Leiningen](https://leini
 
 ### Leyendo archivos de Racket
 
-Para un archivo de Racket, se debe ejecutar el comando `lein run` y luego escribir en el REPL:
+Para un leer archivo de Racket, se debe ejecutar el comando `lein run` y luego escribir en el REPL:
 
 Si queremos leer el archivo `demo.rkt`:
 
