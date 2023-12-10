@@ -94,6 +94,7 @@
 
 ; Para el final
 (declare fnc-floor)
+(declare fnc-even?)
 
 
 (defn -main []
@@ -109,7 +110,7 @@
                    'display 'display 'enter! 'enter! 'env 'env 'equal? 'equal? 'eval 'eval 'exit 'exit
                    'if 'if 'lambda 'lambda 'length 'length 'list 'list 'list? 'list?
                    'newline 'newline 'nil (symbol "#f") 'not 'not 'null? 'null? 'or 'or 'quote 'quote
-                   'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor
+                   'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor 'even? 'even?
                    (symbol "#t") (symbol "#t") '+ '+ '- '- '< '< '> '> '>= '>=) ""))
       ([amb ns]
        (if (empty? ns) (print ns) (pr ns)) (print "> ") (flush)
@@ -239,6 +240,7 @@
 
             ; Agregadas para final
             (= fnc 'floor) (fnc-floor lae)
+            (= fnc 'even?) (fnc-even? lae)
 
             :else (generar-mensaje-error :wrong-type-apply fnc)))
 
@@ -968,6 +970,7 @@
       (fnc-comparar-aux lista >= '>=)
       )
 
+; Agregadas para el final
 (defn fnc-floor
       "Devuelve el mayor entero menor o igual al numero dado."
       [lista]
@@ -976,6 +979,17 @@
             (not (number? (first lista))) (generar-mensaje-error :wrong-type-arg 'floor (first lista))
             :else (float (int (first lista)))
             )
+      )
+
+(defn fnc-even?
+      "Devuelve #t si el numero dado es par; si no, #f."
+      [lista]
+      (cond
+            (not (= (count lista) 1)) (generar-mensaje-error :wrong-number-args-oper 'even?)
+            (not (integer? (first lista))) (generar-mensaje-error :wrong-type-arg 'even? (first lista))
+            :else (bool-a-simbolo (even? (first lista)))
+            )
+
       )
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))

@@ -271,3 +271,15 @@
     (is (= (fnc-floor (list "A")) (generar-mensaje-error :wrong-type-arg 'floor "A")))
     )
   )
+
+(deftest fnc-even?-test
+  (testing "Test de fnc-even?"
+    (is (= (fnc-even? '(0)) (symbol "#t")))
+    (is (= (fnc-even? '(2)) (symbol "#t")))
+    (is (= (fnc-even? '(3)) (symbol "#f")))
+    (is (= (fnc-even? '(a b)) (generar-mensaje-error :wrong-number-args-oper 'even?)))
+    (is (= (fnc-even? '(2 3)) (generar-mensaje-error :wrong-number-args-oper 'even?)))
+    (is (= (fnc-even? '()) (generar-mensaje-error :wrong-number-args-oper 'even?)))
+    (is (= (fnc-even? '(3.4)) (generar-mensaje-error :wrong-type-arg 'even? 3.4)))
+    )
+  )
