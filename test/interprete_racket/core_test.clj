@@ -260,3 +260,14 @@
     (is (= (evaluar-set! '(set! x '(0 0)) '(x ())) (list (symbol "#<void>") '(x (0 0)))))
     )
   )
+
+; Para final
+(deftest fnc-floor-test
+  (testing "Test de fnc-floor"
+    (is (= (fnc-floor (list 0)) 0.0))
+    (is (= (fnc-floor (list 1)) 1.0))
+    (is (= (fnc-floor (list 2.3)) 2.0))
+    (is (= (fnc-floor (list 2.9)) 2.0))
+    (is (= (fnc-floor (list "A")) (generar-mensaje-error :wrong-type-arg 'floor "A")))
+    )
+  )

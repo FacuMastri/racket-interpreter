@@ -92,6 +92,9 @@
 (declare crear-lambda)
 (declare evaluar-or-aux)
 
+; Para el final
+(declare fnc-floor)
+
 
 (defn -main []
       (repl))
@@ -106,7 +109,7 @@
                    'display 'display 'enter! 'enter! 'env 'env 'equal? 'equal? 'eval 'eval 'exit 'exit
                    'if 'if 'lambda 'lambda 'length 'length 'list 'list 'list? 'list?
                    'newline 'newline 'nil (symbol "#f") 'not 'not 'null? 'null? 'or 'or 'quote 'quote
-                   'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f")
+                   'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor
                    (symbol "#t") (symbol "#t") '+ '+ '- '- '< '< '> '> '>= '>=) ""))
       ([amb ns]
        (if (empty? ns) (print ns) (pr ns)) (print "> ") (flush)
@@ -233,6 +236,9 @@
             (= fnc 'null?) (fnc-null? lae)
             (= fnc 'read) (fnc-read lae)
             (= fnc 'reverse) (fnc-reverse lae)
+
+            ; Agregadas para final
+            (= fnc 'floor) (fnc-floor lae)
 
             :else (generar-mensaje-error :wrong-type-apply fnc)))
 
@@ -960,6 +966,16 @@
       "Devuelve #t si los numeros de una lista estan en orden decreciente; si no, #f."
       [lista]
       (fnc-comparar-aux lista >= '>=)
+      )
+
+(defn fnc-floor
+      "Devuelve el mayor entero menor o igual al numero dado."
+      [lista]
+      (cond
+            (not (= (count lista) 1)) (generar-mensaje-error :wrong-number-args-oper 'floor)
+            (not (number? (first lista))) (generar-mensaje-error :wrong-type-arg 'floor (first lista))
+            :else (float (int (first lista)))
+            )
       )
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))
