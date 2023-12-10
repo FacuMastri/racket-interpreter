@@ -95,6 +95,8 @@
 ; Para el final
 (declare fnc-floor)
 (declare fnc-even?)
+(declare fnc-multiplicar)
+(declare fnc-multiplicar-aux)
 
 
 (defn -main []
@@ -111,6 +113,7 @@
                    'if 'if 'lambda 'lambda 'length 'length 'list 'list 'list? 'list?
                    'newline 'newline 'nil (symbol "#f") 'not 'not 'null? 'null? 'or 'or 'quote 'quote
                    'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor 'even? 'even?
+                   '* '*
                    (symbol "#t") (symbol "#t") '+ '+ '- '- '< '< '> '> '>= '>=) ""))
       ([amb ns]
        (if (empty? ns) (print ns) (pr ns)) (print "> ") (flush)
@@ -241,6 +244,7 @@
             ; Agregadas para final
             (= fnc 'floor) (fnc-floor lae)
             (= fnc 'even?) (fnc-even? lae)
+            (= fnc '*) (fnc-multiplicar lae)
 
             :else (generar-mensaje-error :wrong-type-apply fnc)))
 
@@ -990,6 +994,38 @@
             :else (bool-a-simbolo (even? (first lista)))
             )
 
+      )
+
+; user=> (fnc-multiplicar ())
+; 1
+; user=> (fnc-multiplicar '(3))
+; 3
+; user=> (fnc-multiplicar '(3 4))
+; 12
+; user=> (fnc-multiplicar '(3 4 5))
+; 60
+; user=> (fnc-multiplicar '(A 4 5 6))
+; (;ERROR: *: Wrong type in arg1 A)
+; user=> (fnc-multiplicar '(3 A 5 6))
+; (;ERROR: *: Wrong type in arg2 A)
+; user=> (fnc-multiplicar '(3 4 A 6))
+; (;ERROR: *: Wrong type in arg2 A)
+(defn fnc-multiplicar
+      "Multiplica los elementos de una lista"
+      [lista]
+      (cond
+            (empty? lista) 1
+            (not (number? (first lista))) (generar-mensaje-error :wrong-type-arg1 '* (first lista))
+            :else (reduce fnc-multiplicar-aux lista)
+            )
+      )
+
+(defn fnc-multiplicar-aux [x y]
+      (cond
+            (not (number? x)) (reduced (generar-mensaje-error :wrong-type-arg1 '* x))
+            (not (number? y)) (reduced (generar-mensaje-error :wrong-type-arg2 '* y))
+            :else (* x y)
+            )
       )
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))

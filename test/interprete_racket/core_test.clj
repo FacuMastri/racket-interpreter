@@ -283,3 +283,17 @@
     (is (= (fnc-even? '(3.4)) (generar-mensaje-error :wrong-type-arg 'even? 3.4)))
     )
   )
+
+(deftest fnc-multiplicar-test
+  (testing "Test de fnc-multiplicar"
+    (is (= (fnc-multiplicar '()) 1))
+    (is (= (fnc-multiplicar '(3)) 3))
+    (is (= (fnc-multiplicar '(3 4)) 12))
+    (is (= (fnc-multiplicar '(3 4 5)) 60))
+    (is (= (fnc-multiplicar '(3.4 4.2)) 14.28))
+    (is (= (str (fnc-multiplicar '(3 A))) "(;ERROR: *: Wrong type in arg2 A)"))
+    (is (= (str (fnc-multiplicar '(A))) "(;ERROR: *: Wrong type in arg1 A)"))
+    (is (= (str (fnc-multiplicar '(A 3))) "(;ERROR: *: Wrong type in arg1 A)"))
+    (is (= (str (fnc-multiplicar '(4 3 A))) "(;ERROR: *: Wrong type in arg2 A)"))
+    )
+  )
