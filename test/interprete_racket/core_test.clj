@@ -297,3 +297,17 @@
     (is (= (str (fnc-multiplicar '(4 3 A))) "(;ERROR: *: Wrong type in arg2 A)"))
     )
   )
+
+(deftest fnc-dividir-test
+  (testing "Test de fnc-dividir"
+    (is (= (fnc-dividir '()) (generar-mensaje-error :wrong-number-args-oper '/)))
+    (is (= (fnc-dividir '(3)) 3))
+    (is (= (fnc-dividir '(3 4)) (/ 3 4)))
+    (is (= (fnc-dividir '(3 4 5)) (/ 3 4 5)))
+    (is (= (fnc-dividir '(3.4 4.2)) (/ 3.4 4.2)))
+    (is (= (str (fnc-dividir '(3 A))) "(;ERROR: /: Wrong type in arg2 A)"))
+    (is (= (str (fnc-dividir '(A))) "(;ERROR: /: Wrong type in arg1 A)"))
+    (is (= (str (fnc-dividir '(A 3))) "(;ERROR: /: Wrong type in arg1 A)"))
+    (is (= (str (fnc-dividir '(4 3 A))) "(;ERROR: /: Wrong type in arg2 A)"))
+    )
+  )

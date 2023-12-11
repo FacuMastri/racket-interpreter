@@ -97,6 +97,8 @@
 (declare fnc-even?)
 (declare fnc-multiplicar)
 (declare fnc-multiplicar-aux)
+(declare fnc-dividir)
+(declare fnc-dividir-aux)
 
 
 (defn -main []
@@ -113,7 +115,7 @@
                    'if 'if 'lambda 'lambda 'length 'length 'list 'list 'list? 'list?
                    'newline 'newline 'nil (symbol "#f") 'not 'not 'null? 'null? 'or 'or 'quote 'quote
                    'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor 'even? 'even?
-                   '* '*
+                   '* '* '/ '/
                    (symbol "#t") (symbol "#t") '+ '+ '- '- '< '< '> '> '>= '>=) ""))
       ([amb ns]
        (if (empty? ns) (print ns) (pr ns)) (print "> ") (flush)
@@ -245,6 +247,7 @@
             (= fnc 'floor) (fnc-floor lae)
             (= fnc 'even?) (fnc-even? lae)
             (= fnc '*) (fnc-multiplicar lae)
+            (= fnc '/) (fnc-dividir lae)
 
             :else (generar-mensaje-error :wrong-type-apply fnc)))
 
@@ -1027,6 +1030,25 @@
             :else (* x y)
             )
       )
+
+(defn fnc-dividir
+  "Divide los elementos de una lista"
+  [lista]
+  (cond
+    (empty? lista) (generar-mensaje-error :wrong-number-args-oper '/)
+    (not (number? (first lista))) (generar-mensaje-error :wrong-type-arg1 '/ (first lista))
+    (= (count lista) 1) (first lista)
+    :else (reduce fnc-dividir-aux lista)
+    )
+  )
+
+(defn fnc-dividir-aux [x y]
+  (cond
+    (not (number? x)) (reduced (generar-mensaje-error :wrong-type-arg1 '/ x))
+    (not (number? y)) (reduced (generar-mensaje-error :wrong-type-arg2 '/ y))
+    :else (/ x y)
+    )
+  )
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))
 ; (32 (x 6 y 11 z "hola"))
