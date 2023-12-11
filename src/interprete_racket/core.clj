@@ -100,6 +100,7 @@
 (declare fnc-dividir)
 (declare fnc-dividir-aux)
 (declare fnc-igual)
+(declare fnc-menor-o-igual)
 
 
 (defn -main []
@@ -116,7 +117,7 @@
                    'if 'if 'lambda 'lambda 'length 'length 'list 'list 'list? 'list?
                    'newline 'newline 'nil (symbol "#f") 'not 'not 'null? 'null? 'or 'or 'quote 'quote
                    'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor 'even? 'even?
-                   '* '* '/ '/ '= '=
+                   '* '* '/ '/ '= '= '<= '<=
                    (symbol "#t") (symbol "#t") '+ '+ '- '- '< '< '> '> '>= '>=) ""))
       ([amb ns]
        (if (empty? ns) (print ns) (pr ns)) (print "> ") (flush)
@@ -250,6 +251,7 @@
             (= fnc '*) (fnc-multiplicar lae)
             (= fnc '/) (fnc-dividir lae)
             (= fnc '=) (fnc-igual lae)
+            (= fnc '<=) (fnc-menor-o-igual lae)
 
             :else (generar-mensaje-error :wrong-type-apply fnc)))
 
@@ -1070,6 +1072,15 @@
       (cond
             (< (count lista) 2) (generar-mensaje-error :wrong-number-args-oper '=)
             :else (fnc-comparar-aux lista = '=))
+      )
+
+(defn fnc-menor-o-igual
+      [lista]
+      (cond
+            ; Observacion: si no chequeo esto y me pasan '(A) como argumento, el fnc-comparar-aux no funciona y devuelve el A como valor. No levanta error
+            (and (= (count lista) 1) (not (number? (first lista)))) (generar-mensaje-error :wrong-type-arg '<= (first lista))
+            :else (fnc-comparar-aux lista <= '<=)
+            )
       )
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))

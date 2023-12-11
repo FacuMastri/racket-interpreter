@@ -326,3 +326,17 @@
     (is (= (fnc-igual '(1 1 "A")) (generar-mensaje-error :wrong-type-arg2 '= "A")))
     )
   )
+
+(deftest fnc-menor-o-igual-test
+  (testing "test de fnc-menor-o-igual"
+    (is (= (fnc-menor-o-igual '()) (symbol "#t")))
+    (is (= (fnc-menor-o-igual '(1)) (symbol "#t")))
+    (is (= (fnc-menor-o-igual '(1 1)) (symbol "#t")))
+    (is (= (fnc-menor-o-igual '(1 1 1)) (symbol "#t")))
+    (is (= (fnc-menor-o-igual '(1 2 3)) (symbol "#t")))
+    (is (= (fnc-menor-o-igual '(1.5 2.5 3.5)) (symbol "#t")))
+    (is (= (fnc-menor-o-igual '(3 1 1)) (symbol "#f")))
+    (is (= (fnc-menor-o-igual '(A)) (generar-mensaje-error :wrong-type-arg '<= (symbol "A"))))
+    (is (= (fnc-menor-o-igual '("A" 1)) (generar-mensaje-error :wrong-type-arg1 '<= "A")))
+    )
+  )
