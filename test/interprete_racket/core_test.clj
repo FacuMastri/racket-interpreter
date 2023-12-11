@@ -340,3 +340,18 @@
     (is (= (fnc-menor-o-igual '("A" 1)) (generar-mensaje-error :wrong-type-arg1 '<= "A")))
     )
   )
+
+(deftest evaluar-and-test
+  (testing "Test de evaluar-and"
+    (is (= (evaluar-and (list 'and) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#t") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-and (list 'and (symbol "#t")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#t") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-and (list 'and 7) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list 7 (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-and (list 'and 7 8) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list 8 (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-and (list 'and 7 8 (symbol "#f")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#f") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-and (list 'and (symbol "#f") 5) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#f") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-and (list 'and (symbol "#f")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#f") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-and (list 'and (symbol "#f") (symbol "#t")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#f") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-and (list 'and (symbol "#f") (symbol "#t") 24) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#f") (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    (is (= (evaluar-and (list 'and (symbol "#f") (symbol "#f") 24) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#f")  (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
+    )
+  )

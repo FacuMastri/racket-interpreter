@@ -101,6 +101,8 @@
 (declare fnc-dividir-aux)
 (declare fnc-igual)
 (declare fnc-menor-o-igual)
+(declare evaluar-and)
+(declare evaluar-and-aux)
 
 
 (defn -main []
@@ -117,7 +119,7 @@
                    'if 'if 'lambda 'lambda 'length 'length 'list 'list 'list? 'list?
                    'newline 'newline 'nil (symbol "#f") 'not 'not 'null? 'null? 'or 'or 'quote 'quote
                    'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor 'even? 'even?
-                   '* '* '/ '/ '= '= '<= '<=
+                   '* '* '/ '/ '= '= '<= '<= 'and 'and
                    (symbol "#t") (symbol "#t") '+ '+ '- '- '< '< '> '> '>= '>=) ""))
       ([amb ns]
        (if (empty? ns) (print ns) (pr ns)) (print "> ") (flush)
@@ -161,6 +163,11 @@
                   (= (first expre) 'quote) (evaluar-quote expre amb)
                   (= (first expre) 'lambda) (evaluar-lambda expre amb)
                   (= (first expre) 'enter!) (evaluar-enter! expre amb)
+
+                  ; Para final
+
+                  (= (first expre) 'and) (evaluar-and expre amb)
+
                   ;
                   ;
                   ;
@@ -512,7 +519,7 @@
                                                                (binding [*read-eval* false]
                                                                      (try
                                                                            (cargar-arch (second (evaluar (restaurar-bool (read in)) nuevo-amb)) in nom-original nom-a-usar)
-                                                                           (catch Exception e
+                                                                           (catch Exception _
                                                                                  (imprimir (generar-mensaje-error :end-of-file 'list))))))]
                                                      (do (delete-file "rkt-temp" true) ret))))))))))
       ([amb in nom-orig nom-usado]
@@ -1080,6 +1087,40 @@
             ; Observacion: si no chequeo esto y me pasan '(A) como argumento, el fnc-comparar-aux no funciona y devuelve el A como valor. No levanta error
             (and (= (count lista) 1) (not (number? (first lista)))) (generar-mensaje-error :wrong-type-arg '<= (first lista))
             :else (fnc-comparar-aux lista <= '<=)
+            )
+      )
+
+; user=> (evaluar-and (list 'and) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
+; (#t (#f #f #t #t))
+; user=> (evaluar-and (list 'and (symbol "#t")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
+; (#t (#f #f #t #t))
+; user=> (evaluar-and (list 'and 7) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
+; (7 (#f #f #t #t))
+; user=> (evaluar-and (list 'and (symbol "#f") 5) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
+; (#f (#f #f #t #t))
+; user=> (evaluar-and (list 'and (symbol "#t") (symbol "#t")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
+; (#t (#f #f #t #t))
+; user=> (evaluar-and (list 'and (symbol "#t") 5) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
+; (5 (#f #f #t #t))
+; user=> (evaluar-and (list 'and (symbol "#t") 5 (symbol "#t")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
+; (#t (#f #f #t #t))
+(defn evaluar-and
+      "Evalua una expresion `and`. Devuelve una lista con el resultado y un ambiente."
+      [expresion ambiente]
+      (let [lista (rest expresion)]
+            (if (empty? lista) (list (symbol "#t") ambiente)
+                               (list (reduce (partial evaluar-and-aux ambiente) (symbol "#f") lista) ambiente)
+                               )
+            )
+      )
+
+; Observacion: el _ es para ignorar el parametro, por como me quedo al hacer copy paste desde el evaluar-or
+(defn evaluar-and-aux [ambiente _ valor]
+      (let [evaluado (first (evaluar valor ambiente))]
+            (cond
+                  (= (symbol "#f") evaluado) (reduced evaluado)
+                  :else evaluado
+                  )
             )
       )
 
