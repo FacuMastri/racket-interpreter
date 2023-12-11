@@ -311,3 +311,18 @@
     (is (= (str (fnc-dividir '(4 3 A))) "(;ERROR: /: Wrong type in arg2 A)"))
     )
   )
+
+(deftest fnc-igual-test
+  (testing "Test de fnc-igual"
+    (is (= (fnc-igual '()) (generar-mensaje-error :wrong-number-args-oper '=)))
+    (is (= (fnc-igual '(1)) (generar-mensaje-error :wrong-number-args-oper '=)))
+    (is (= (fnc-igual '("A")) (generar-mensaje-error :wrong-number-args-oper '=)))
+    (is (= (fnc-igual '(1 1)) (symbol "#t")))
+    (is (= (fnc-igual '(2.5 2.5)) (symbol "#t")))
+    (is (= (fnc-igual '(1 1 1)) (symbol "#t")))
+    (is (= (fnc-igual '(1 1 2)) (symbol "#f")))
+    (is (= (fnc-igual '(2 1 2)) (symbol "#f")))
+    (is (= (fnc-igual '("A" 1 2)) (generar-mensaje-error :wrong-type-arg1 '= "A")))
+    (is (= (fnc-igual '(1 1 "A")) (generar-mensaje-error :wrong-type-arg2 '= "A")))
+    )
+  )

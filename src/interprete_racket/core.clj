@@ -99,6 +99,7 @@
 (declare fnc-multiplicar-aux)
 (declare fnc-dividir)
 (declare fnc-dividir-aux)
+(declare fnc-igual)
 
 
 (defn -main []
@@ -115,7 +116,7 @@
                    'if 'if 'lambda 'lambda 'length 'length 'list 'list 'list? 'list?
                    'newline 'newline 'nil (symbol "#f") 'not 'not 'null? 'null? 'or 'or 'quote 'quote
                    'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor 'even? 'even?
-                   '* '* '/ '/
+                   '* '* '/ '/ '= '=
                    (symbol "#t") (symbol "#t") '+ '+ '- '- '< '< '> '> '>= '>=) ""))
       ([amb ns]
        (if (empty? ns) (print ns) (pr ns)) (print "> ") (flush)
@@ -248,6 +249,7 @@
             (= fnc 'even?) (fnc-even? lae)
             (= fnc '*) (fnc-multiplicar lae)
             (= fnc '/) (fnc-dividir lae)
+            (= fnc '=) (fnc-igual lae)
 
             :else (generar-mensaje-error :wrong-type-apply fnc)))
 
@@ -1049,6 +1051,26 @@
     :else (/ x y)
     )
   )
+
+; user=> (fnc-igual ())
+; (;ERROR: Wrong number of args given =)
+; user=> (fnc-igual '(1))
+; (;ERROR: Wrong number of args given =)
+; user=> (fnc-igual '(1 1))
+; #t
+; user=> (fnc-igual '(1 2))
+; #f
+; user=> (fnc-igual '(2 2 2))
+; #t
+; user=> (fnc-igual '(2 2 A))
+; (;ERROR: <: Wrong type in arg2 A)
+(defn fnc-igual
+      "Compara numeros. Si son iguales, devuelve #t. Si no, #f."
+      [lista]
+      (cond
+            (< (count lista) 2) (generar-mensaje-error :wrong-number-args-oper '=)
+            :else (fnc-comparar-aux lista = '=))
+      )
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))
 ; (32 (x 6 y 11 z "hola"))
