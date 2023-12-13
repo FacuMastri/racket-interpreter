@@ -355,3 +355,10 @@
     (is (= (evaluar-and (list 'and (symbol "#f") (symbol "#f") 24) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t"))) (list (symbol "#f")  (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))))
     )
   )
+
+(deftest evaluar-let-test
+  (testing "Test de evaluar-let"
+    (is (= (evaluar-let '(let ((x 10) (y 20)) (+ x y)) '(a 1 + +)) '(30 (a 1 + +))))
+    (is (= (evaluar-let '(let ((x 2)) (* x 50)) '(a 1 * *)) '(100 (a 1 * *))))
+    )
+  )

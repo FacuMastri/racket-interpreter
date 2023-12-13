@@ -103,6 +103,8 @@
 (declare fnc-menor-o-igual)
 (declare evaluar-and)
 (declare evaluar-and-aux)
+(declare evaluar-let)
+(declare reemplazar-variable)
 
 
 (defn -main []
@@ -119,7 +121,7 @@
                    'if 'if 'lambda 'lambda 'length 'length 'list 'list 'list? 'list?
                    'newline 'newline 'nil (symbol "#f") 'not 'not 'null? 'null? 'or 'or 'quote 'quote
                    'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor 'even? 'even?
-                   '* '* '/ '/ '= '= '<= '<= 'and 'and
+                   '* '* '/ '/ '= '= '<= '<= 'and 'and 'let 'let
                    (symbol "#t") (symbol "#t") '+ '+ '- '- '< '< '> '> '>= '>=) ""))
       ([amb ns]
        (if (empty? ns) (print ns) (pr ns)) (print "> ") (flush)
@@ -163,6 +165,7 @@
                   (= (first expre) 'quote) (evaluar-quote expre amb)
                   (= (first expre) 'lambda) (evaluar-lambda expre amb)
                   (= (first expre) 'enter!) (evaluar-enter! expre amb)
+                  (= (first expre) 'let) (evaluar-let expre amb)
 
                   ; Para final
 
@@ -1123,6 +1126,27 @@
                   )
             )
       )
+
+; user=> (evaluar-let '(let ((x 10) (y 20)) (+ x y)) '(a 1 + +))
+; (30 (a 1 + +))
+; user=> (evaluar-let '(let ((x 2)) (* x 50)) '(a 1 * *))
+; (100 (a 1 * *))
+(defn evaluar-let
+      [expresion ambiente]
+      (cond
+            (not (= (count expresion) 3)) (list (generar-mensaje-error :missing-or-extra 'let expresion) ambiente)
+            :else (evaluar (map (partial reemplazar-variable (second expresion)) (last expresion)) ambiente)
+            )
+      )
+
+(defn reemplazar-variable
+      [variables elemento]
+      (reduce
+            (fn [resultado valor-actual] (cond
+                                 (= (first valor-actual) elemento) (reduced (second valor-actual))
+                                 (nil? (first resultado)) (reduced elemento)
+                                 :else (rest resultado)))
+            (rest variables) variables))
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))
 ; (32 (x 6 y 11 z "hola"))
