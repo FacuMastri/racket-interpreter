@@ -105,6 +105,7 @@
 (declare evaluar-and-aux)
 (declare evaluar-let)
 (declare reemplazar-variable)
+(declare evaluar-begin)
 
 
 (defn -main []
@@ -121,7 +122,7 @@
                    'if 'if 'lambda 'lambda 'length 'length 'list 'list 'list? 'list?
                    'newline 'newline 'nil (symbol "#f") 'not 'not 'null? 'null? 'or 'or 'quote 'quote
                    'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor 'even? 'even?
-                   '* '* '/ '/ '= '= '<= '<= 'and 'and 'let 'let
+                   '* '* '/ '/ '= '= '<= '<= 'and 'and 'let 'let 'begin 'begin
                    (symbol "#t") (symbol "#t") '+ '+ '- '- '< '< '> '> '>= '>=) ""))
       ([amb ns]
        (if (empty? ns) (print ns) (pr ns)) (print "> ") (flush)
@@ -166,6 +167,7 @@
                   (= (first expre) 'lambda) (evaluar-lambda expre amb)
                   (= (first expre) 'enter!) (evaluar-enter! expre amb)
                   (= (first expre) 'let) (evaluar-let expre amb)
+                  (= (first expre) 'begin) (evaluar-begin expre amb)
 
                   ; Para final
 
@@ -1147,6 +1149,16 @@
                                  (nil? (first resultado)) (reduced elemento)
                                  :else (rest resultado)))
             (rest variables) variables))
+
+;; > (evaluar-begin '(begin ((define x 0) (set! x 5) (+ x 1)) '()))
+;; (6 (x 5))
+;; > (evaluar-begin '(begin '((display "4 plus 1 equals ") (display (+ 4 1)) (newline) '()))
+;; (#void ())
+;(defn evaluar-begin
+;      "Evalua una expresion `begin`. Devuelve una lista con el resultado y el ambiente modificado."
+;      [expresion ambiente]
+;      ((reduce (fn [resultado expre] (evaluar expre (second resultado))) (list (symbol "#void") ambiente) (rest expresion)))
+;      )
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))
 ; (32 (x 6 y 11 z "hola"))

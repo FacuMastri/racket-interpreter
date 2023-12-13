@@ -362,3 +362,9 @@
     (is (= (evaluar-let '(let ((x 2)) (* x 50)) '(a 1 * *)) '(100 (a 1 * *))))
     )
   )
+
+;(deftest evaluar-begin-test
+;  (testing "Test de evaluar-begin"
+;    (is (= (evaluar-begin '(begin (define x 0) (set! x 5) (+ x 1)) '()) '(6 (x 5))))
+;    )
+;  )
