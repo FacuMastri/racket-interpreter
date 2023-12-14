@@ -106,6 +106,7 @@
 (declare evaluar-let)
 (declare reemplazar-variable)
 (declare evaluar-begin)
+(declare fnc-cdar)
 
 
 (defn -main []
@@ -122,7 +123,7 @@
                    'if 'if 'lambda 'lambda 'length 'length 'list 'list 'list? 'list?
                    'newline 'newline 'nil (symbol "#f") 'not 'not 'null? 'null? 'or 'or 'quote 'quote
                    'read 'read 'reverse 'reverse 'set! 'set! (symbol "#f") (symbol "#f") 'floor 'floor 'even? 'even?
-                   '* '* '/ '/ '= '= '<= '<= 'and 'and 'let 'let 'begin 'begin
+                   '* '* '/ '/ '= '= '<= '<= 'and 'and 'let 'let 'begin 'begin 'cdar 'cdar
                    (symbol "#t") (symbol "#t") '+ '+ '- '- '< '< '> '> '>= '>=) ""))
       ([amb ns]
        (if (empty? ns) (print ns) (pr ns)) (print "> ") (flush)
@@ -264,6 +265,7 @@
             (= fnc '/) (fnc-dividir lae)
             (= fnc '=) (fnc-igual lae)
             (= fnc '<=) (fnc-menor-o-igual lae)
+            (= fnc 'cdar) (fnc-cdar lae)
 
             :else (generar-mensaje-error :wrong-type-apply fnc)))
 
@@ -1159,6 +1161,20 @@
 ;      [expresion ambiente]
 ;      ((reduce (fn [resultado expre] (evaluar expre (second resultado))) (list (symbol "#void") ambiente) (rest expresion)))
 ;      )
+
+; user> (cdar '((2 3) 4 5))
+; (3)
+; Recordar que recibimos una lae, por lo tanto en realidad seria (cdar '( ((2 3) 4 5) ))
+; donde recibimos en la lae la lista de parametros que tiene que ser 1 (la lista de cdar) y esa lista tiene que tener como primer parametro una lista
+(defn fnc-cdar
+      [lista]
+      (cond
+            (not (= (count lista) 1)) (generar-mensaje-error :wrong-number-args 'cdar)
+            (not (seq? (first (first lista)))) (generar-mensaje-error :wrong-type-arg 'cdar lista)
+            (empty? (first (first lista))) (generar-mensaje-error :wrong-number-args 'cdar)
+            :else (rest (first (first lista)))
+            )
+      )
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))
 ; (32 (x 6 y 11 z "hola"))

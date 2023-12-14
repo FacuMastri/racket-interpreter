@@ -368,3 +368,13 @@
 ;    (is (= (evaluar-begin '(begin (define x 0) (set! x 5) (+ x 1)) '()) '(6 (x 5))))
 ;    )
 ;  )
+
+(deftest fnc-cdar-test
+  (testing "Test de fnc-cdar"
+    (is (= (fnc-cdar '(((2 3) 4 5))) '(3)))
+    (is (= (fnc-cdar '(((3) 4 5))) '()))
+    (is (= (fnc-cdar '((() 4 5))) (generar-mensaje-error :wrong-number-args 'cdar)))
+    (is (= (fnc-cdar '((A 4 5))) (generar-mensaje-error :wrong-type-arg 'cdar '((A 4 5)))))
+    (is (= (fnc-cdar '(((2 3) 4 5) 4 5)) (generar-mensaje-error :wrong-number-args 'cdar)))
+    )
+  )
