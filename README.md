@@ -1,32 +1,32 @@
 # Racket Interpreter
 
-Interprete de Racket realizado en Clojure
+Racket interpreter implemented in Clojure
 
-## Uso
+## Usage
 
-Para ejecutar el proyecto, se necesita tener instalado [Leiningen](https://leiningen.org/).
+To run the project, you need to have [Leiningen](https://leiningen.org/) installed.
 
-- `lein run`: Ejecuta el proyecto.
-- `lein test`: ejecuta los tests del proyecto.
+- `lein run`: Executes the project.
+- `lein test`: Runs the project tests.
 
-### Leyendo archivos de Racket
+### Reading Racket Files
 
-Para un leer archivo de Racket, se debe ejecutar el comando `lein run` y luego escribir en el REPL:
+To read a Racket file, you should execute the command `lein run` and then type in the REPL:
 
-Si queremos leer el archivo `demo.rkt`:
+If you want to read the file `demo.rkt`:
 
-```
+```clojure
 (enter! "demo.rkt")
 ```
 
-Si queremos leer el archivo `jarras.rkt`:
+If you want to read the file `jarras.rkt`:
 
-```
+```clojure
 (enter! "jarras.rkt")
 ```
 
-Luego, podemos hacer:
+Then, you can proceed with:
 
-```
+```clojure
 (breadth-first bc)
 ```
